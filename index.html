@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رمضان كريم ✨</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --bg-dark: #0B132B;
+            --gold: #F4C430;
+            --soft-white: #EAEAEA;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(244, 196, 48, 0.2);
+            --accent-glow: rgba(244, 196, 48, 0.25);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        body { margin: 0; background: var(--bg-dark); color: var(--soft-white); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; }
+
+        /* --- نجوم متحركة تتساقط (الخلفية) --- */
+        #stars-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        /* --- زينة الواجهة (رقيقة وشيك) --- */
+        .intro-decoration {
+            position: absolute; top: 0; left: 0; width: 100%; height: 200px;
+            display: flex; justify-content: space-around; pointer-events: none; z-index: 10;
+        }
+        .dec-item {
+            display: flex; flex-direction: column; align-items: center;
+            animation: swingDec 5s infinite ease-in-out; transform-origin: top;
+        }
+        .dec-line { width: 0.5px; background: linear-gradient(to bottom, transparent, var(--gold)); opacity: 0.4; }
+        .dec-item i { 
+            color: var(--gold); 
+            filter: drop-shadow(0 0 5px var(--gold)); 
+            font-size: 15px; 
+            animation: glowPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes swingDec { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        @keyframes glowPulse { 0%, 100% { filter: drop-shadow(0 0 5px var(--gold)); opacity: 0.8; } 50% { filter: drop-shadow(0 0 15px var(--gold)); opacity: 1; } }
+
+        /* --- تأثيرات الظهور --- */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(40px) scale(0.95); 
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); 
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            filter: blur(0);
+        }
+
+        #page-1 {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #1c2541 0%, #0B132B 100%);
+            position: fixed; width: 100%; z-index: 999; 
+            transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        
+        .login-card {
+            text-align: center; padding: 45px 20px; 
+            background: var(--glass); backdrop-filter: blur(20px); 
+            border-radius: 40px; border: 1px solid var(--glass-border);
+            width: 85%; max-width: 380px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* تعديل سطرين التهنئة */
+        .intro-rhyme {
+            color: var(--gold);
+            font-size: 15px;
+            font-style: italic;
+            margin: 15px auto 0;
+            line-height: 1.8;
+            font-weight: 600;
+            max-width: 280px; /* لتجبر النص على النزول في سطرين متساويين */
+        }
+
+        #page-2 { 
+            display: none; opacity: 0; height: 100vh; overflow-y: auto; 
+            position: relative; z-index: 5; 
+            transition: all 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+            transform: scale(1.1); filter: blur(10px);
+        }
+
+        .container { padding: 80px 20px 150px 20px; max-width: 450px; margin: 0 auto; text-align: center; }
+
+        .countdown-title { font-size: 26px; font-weight: 800; color: var(--soft-white); margin-bottom: 20px; }
+
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 30px 0 50px; }
+        .timer-box { 
+            background: var(--glass); border: 1px solid var(--glass-border); 
+            padding: 18px 5px; border-radius: 24px; 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .timer-num { display: block; font-size: 26px; font-weight: 900; color: var(--gold); text-shadow: 0 0 15px var(--accent-glow); }
+
+        .main-img-box { width: 100%; border-radius: 35px; overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 50px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .main-img-box img { width: 100%; display: block; transition: transform 0.8s; }
+
+        .music-control-bar { 
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 18px 25px; margin-bottom: 50px; 
+            display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(15px);
+        }
+        .play-pause-btn { 
+            width: 50px; height: 50px; background: var(--gold); 
+            border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; color: var(--bg-dark); cursor: pointer;
+            box-shadow: 0 0 15px var(--accent-glow); transition: 0.3s;
+        }
+
+        .gallery-card { 
+            background: var(--glass); border-radius: 35px; 
+            border: 1px solid var(--glass-border); margin-bottom: 50px; 
+            overflow: hidden; backdrop-filter: blur(10px);
+        }
+        .gallery-text { padding: 30px; font-size: 17px; font-weight: 600; line-height: 1.8; color: rgba(234, 234, 234, 0.95); }
+
+        .btn-gold { 
+            background: linear-gradient(135deg, #F4C430, #d4af37); 
+            color: var(--bg-dark); border: none; padding: 20px 50px; 
+            border-radius: 50px; font-weight: 900; cursor: pointer; 
+            font-size: 19px; 
+            box-shadow: 0 15px 30px rgba(244, 196, 48, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        input { 
+            width: 100%; padding: 18px; margin: 25px 0; border-radius: 20px; 
+            border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); 
+            color: white; text-align: center; outline: none; font-size: 17px;
+            font-weight: 600;
+        }
+
+        #final-popup { 
+            display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.9); z-index: 2000; 
+            align-items: center; justify-content: center; padding: 25px; opacity: 0; 
+            transition: 0.8s ease; backdrop-filter: blur(15px);
+        }
+        .popup-content { 
+            background: linear-gradient(145deg, #161d31, #0b132b); 
+            border: 1px solid var(--gold); border-radius: 45px; 
+            padding: 50px 20px; text-align: center; width: 95%; max-width: 440px;
+        }
+        .popup-title {
+            color: var(--gold); 
+            margin-bottom: 25px; 
+            font-size: clamp(16px, 5vw, 24px); 
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="stars-canvas"></canvas>
+
+    <section id="page-1">
+        <div class="intro-decoration">
+            <div class="dec-item" style="left: 5%;"><div class="dec-line" style="height: 110px;"></div><i class="fa-solid fa-star"></i></div>
+            <div class="dec-item" style="left: 25%;"><div class="dec-line" style="height: 160px;"></div><i class="fa-solid fa-lantern"></i></div>
+            <div class="dec-item" style="left: 50%;"><div class="dec-line" style="height: 90px;"></div><i class="fa-solid fa-moon"></i></div>
+            <div class="dec-item" style="left: 75%;"><div class="dec-line" style="height: 140px;"></div><i class="fa-solid fa-lantern"></i></div>
+            <div class="dec-item" style="left: 95%;"><div class="dec-line" style="height: 100px;"></div><i class="fa-solid fa-star"></i></div>
+        </div>
+
+        <div class="login-card animate__animated animate__fadeInUp">
+            <i class="fa-solid fa-moon" style="font-size: 60px; color: var(--gold); margin-bottom: 20px; display: block; filter: drop-shadow(0 0 15px var(--gold));"></i>
+            <h1 style="color: var(--gold); font-weight: 800; margin: 0; font-size: 30px;">رمضان كريم ✨</h1>
+            <div class="intro-rhyme">قبل الشوربة والسمبوسة لك ألف بوسه، وكل رمضان وانت بخير قبل الحوسه</div>
+            <input type="text" id="passInput" placeholder="اكتبي كلمه السر ي نونه">
+            <button class="btn-gold" style="width: 100%;" onclick="checkPass()">افتح هديتك 🎁</button>
+        </div>
+    </section>
+
+    <section id="page-2">
+        <div class="container">
+            <div class="reveal">
+                <div class="countdown-title">باقي على رمضان ❤️🌙</div>
+                <div class="timer-grid">
+                    <div class="timer-box"><span id="days" class="timer-num">--</span><span style="font-size: 12px; font-weight: bold; opacity: 0.8;">يوم</span></div>
+                    <div class="timer-box"><span id="hours" class="timer-num">--</span><span style="font-size: 12px; font-weight: bold; opacity: 0.8;">ساعة</span></div>
+                    <div class="timer-box"><span id="mins" class="timer-num">--</span><span style="font-size: 12px; font-weight: bold; opacity: 0.8;">دقيقة</span></div>
+                    <div class="timer-box"><span id="secs" class="timer-num">--</span><span style="font-size: 12px; font-weight: bold; opacity: 0.8;">ثانية</span></div>
+                </div>
+            </div>
+
+            <div class="main-img-box reveal">
+                <img src="https://files.catbox.moe/1kauvu.jpg">
+            </div>
+
+            <div class="music-control-bar reveal">
+                <div style="text-align: right;">
+                    <div style="font-size: 17px; font-weight: 900; color: var(--gold);">صوت الروح 🎵</div>
+                    <div style="font-size: 13px; opacity: 0.7;">هدية خاصة عشانك</div>
+                </div>
+                <div class="play-pause-btn" onclick="toggleMusic()"><i id="mIcon" class="fa-solid fa-pause"></i></div>
+                <audio id="bgMusic" loop src="https://image2url.com/r2/default/audio/1771271289697-42fa72f1-9631-4183-8b5b-cf18c9929480.mp3"></audio>
+            </div>
+
+            <div class="rhyme-msg reveal" style="font-size: 20px; font-weight: 600; margin-bottom: 60px; line-height: 1.8; font-style: italic; color: var(--soft-white);">
+                "قبل الشوربة والسمبوسة لك ألف بوسه، وكل رمضان وانت بخير قبل الحوسه"
+            </div>
+
+            <div class="gallery-card reveal">
+                <img src="https://files.catbox.moe/y8xj6a.jpg" style="width:100%">
+                <div class="gallery-text">رمضان كريم يا منى 🌙  
+        ربنا يرزقك ضحك من القلب  
+        ومزاج رايق من غير سبب 😌✨</div>
+            </div>
+
+            <div class="gallery-card reveal">
+                <img src="https://files.catbox.moe/n3r1st.jpg" style="width:100%">
+                <div class="gallery-text">باقي شوية ويبدأ رمضان  
+        يعني أكل كتير ونوم أكتر  
+        ومنى تضحك علينا كلنا 😂🌙</div>
+            </div>
+
+            <div class="gallery-card reveal">
+                <img src="https://i.postimg.cc/s2Dmb5Vm/IMG-20260215-WA0020.jpg" style="width:100%">
+                <div class="gallery-text">يا طيور الضحك عدّي عليهم  
+        وقولي لمنى خليكي كده دايمًا  
+        خفيفة دم ومليانة طاقة حلوة 😄✨</div>
+            </div>
+
+            <div class="reveal" style="margin-top: 60px; padding-bottom: 80px;">
+                <button class="btn-gold" onclick="showFinal()">رمضان كريم يا منى 🌙😂
+                اضغطي براحه</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="final-popup" onclick="closePopup()">
+        <div class="popup-content" onclick="event.stopPropagation()">
+            <h2 class="popup-title">كل سنة ونتي طيبة ي نونه</h2>
+            <p style="line-height: 2; font-size: 19px; font-weight: 600; opacity: 0.95;">
+                ‏دي هدية بسيطة كده  
+    لا بتعترف ولا بتكسف 😅  
+    بس بتقول إنك شخص لطيف  
+    ووجودك دايمًا بيضيف ضحكة حلوة 🤍    الصبر حلو ها 
+            </p>
+            <button class="btn-gold" style="margin-top: 35px; width: auto; padding: 15px 40px;" onclick="closePopup()">خلاص كده 😂❤️</button>
+        </div>
+    </div>
+
+    <script>
+        // --- محرك النجوم المتحركة ---
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for(let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#FFF";
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+                s.y += s.speed;
+                if(s.y > canvas.height) s.y = -5;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', initStars);
+        initStars();
+        drawStars();
+
+        const targetDate = new Date("February 18, 2026 00:00:00").getTime();
+
+        function startTimer() {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                if (distance < 0) {
+                    document.querySelector('.countdown-title').innerText = "رمضان مبارك! 🌙";
+                    return;
+                }
+                document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+                document.getElementById('hours').innerText = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                document.getElementById('mins').innerText = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                document.getElementById('secs').innerText = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+            }, 1000);
+        }
+
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            var windowHeight = window.innerHeight;
+            reveals.forEach(el => {
+                var elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 80) el.classList.add("active");
+            });
+        }
+
+        function checkPass() {
+            if(document.getElementById('passInput').value === "الصغنون") {
+                document.getElementById('bgMusic').play();
+                const p1 = document.getElementById('page-1');
+                const p2 = document.getElementById('page-2');
+                p1.style.filter = 'blur(20px)';
+                p1.style.transform = 'scale(0.8)';
+                p1.style.opacity = '0';
+                setTimeout(() => {
+                    p1.style.display = 'none';
+                    p2.style.display = 'block';
+                    setTimeout(() => { 
+                        p2.style.opacity = '1'; 
+                        p2.style.transform = 'scale(1)'; 
+                        p2.style.filter = 'blur(0)';
+                        reveal(); 
+                    }, 50);
+                    startTimer();
+                }, 1000);
+            } else { alert("ركزي في التاريخ يا ست الكل 😂❤️"); }
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const icon = document.getElementById('mIcon');
+            if (audio.paused) { audio.play(); icon.className = 'fa-solid fa-pause'; }
+            else { audio.pause(); icon.className = 'fa-solid fa-play'; }
+        }
+
+        function showFinal() {
+            const popup = document.getElementById('final-popup');
+            popup.style.display = 'flex';
+            setTimeout(() => popup.style.opacity = '1', 10);
+        }
+        function closePopup() {
+            const popup = document.getElementById('final-popup');
+            popup.style.opacity = '0';
+            setTimeout(() => popup.style.display = 'none', 800);
+        }
+        document.getElementById('page-2').addEventListener('scroll', reveal);
+    </script>
+</body>
+</html>
